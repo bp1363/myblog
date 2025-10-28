@@ -1,35 +1,22 @@
 const express = require('express');
-const path = require('path');
+const cors = require('cors');
+require('dotenv').config(); // Load environment variables
 
-const corsMiddleware = require('./middlewares/cors.middleware');
-const bodyParserMiddleware = require('./middlewares/body-parser.middleware');
-
-const blogRoutes = require('./routes/blog.routes');
-const quoteRoutes = require('./routes/quote.routes');
+const blogRoutes = require('./routes/blog');
+const quotesRoutes = require('./routes/quotes');
 
 const app = express();
 
-// Apply middlewares
-app.use(corsMiddleware);
-app.use(bodyParserMiddleware);
+// Middleware
+app.use(cors()); // Allow all origins (for testing)
+app.use(express.json()); // Parse JSON requests
 
-// API Routes
-app.use('/blogs', blogRoutes);
-app.use('/api/quotes', quoteRoutes);
-
-// Serve Angular static files
-const angularDistPath = path.join(__dirname, 'dist/my-app'); // replace 'my-app' with your Angular output folder
-app.use(express.static(angularDistPath));
-
-// SPA Fallback: send index.html for unknown frontend routes
-app.use((req, res, next) => {
-  if (!req.path.startsWith('/blogs') && !req.path.startsWith('/api/quotes')) {
-    res.sendFile(path.join(angularDistPath, 'index.html'));
-  } else {
-    next();
-  }
-});
+// Routes
+app.use('/api/blogs', blogRoutes);
+app.use('/api/quotes', quotesRoutes);
 
 // Start server
-const PORT = 5000;
-app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});

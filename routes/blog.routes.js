@@ -1,22 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const mysql = require('mysql2/promise');
-
-let db;
-(async () => {
-  db = await mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: 'root',
-    database: 'BlogDB',
-    port: 5345
-  });
-  console.log('✅ MySQL Connected (Blog)');
-})();
+const getConnection = require('../db'); // Import db.js
 
 // Get all blogs
 router.get('/', async (req, res) => {
   try {
+    const db = await getConnection();
     const [rows] = await db.query('SELECT * FROM blogs ORDER BY createdAt DESC');
     res.json(rows);
   } catch (err) {
@@ -29,6 +18,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   const { id } = req.params;
   try {
+    const db = await getConnection();
     const [rows] = await db.query('SELECT * FROM blogs WHERE id = ?', [id]);
     if (rows.length === 0) return res.status(404).json({ message: 'Blog not found' });
     res.json(rows[0]);
@@ -44,6 +34,7 @@ router.post('/', async (req, res) => {
   if (!title || !content) return res.status(400).json({ message: 'Title and content required' });
 
   try {
+    const db = await getConnection();
     const [result] = await db.query('INSERT INTO blogs (title, content) VALUES (?, ?)', [title, content]);
     res.json({ id: result.insertId, title, content });
   } catch (err) {
@@ -59,6 +50,7 @@ router.put('/:id', async (req, res) => {
   if (!title || !content) return res.status(400).json({ message: 'Title and content required' });
 
   try {
+    const db = await getConnection();
     const [result] = await db.query('UPDATE blogs SET title = ?, content = ? WHERE id = ?', [title, content, id]);
     if (result.affectedRows === 0) return res.status(404).json({ message: 'Blog not found' });
     res.json({ id, title, content });
@@ -72,6 +64,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   const { id } = req.params;
   try {
+    const db = await getConnection();
     const [result] = await db.query('DELETE FROM blogs WHERE id = ?', [id]);
     if (result.affectedRows === 0) return res.status(404).json({ message: 'Blog not found' });
     res.json({ message: 'Blog deleted successfully' });
