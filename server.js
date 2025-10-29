@@ -8,9 +8,12 @@ const quotesRoutes = require('./routes/quotes');
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: 'https://blog-web-seven-kappa.vercel.app', // your frontend URL
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json());
-
 
 // Routes
 app.use('/api/blogs', blogRoutes);
