@@ -3,25 +3,23 @@ const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
 
-const blogRoutes = require('./routes/blog');
 const quotesRoutes = require('./routes/quotes');
+const blogRoutes = require('./routes/blog');
 
 const app = express();
 
-// === CORS middleware ===
-// Must be **before routes**
+// CORS middleware: allow your frontend
 app.use(cors({
   origin: 'https://blog-web-seven-kappa.vercel.app', // your frontend URL
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// Parse JSON bodies
 app.use(express.json());
 
-// === Routes ===
-app.use('/api/blogs', blogRoutes);
+// Routes
 app.use('/api/quotes', quotesRoutes);
+app.use('/api/blogs', blogRoutes);
 
 // Health check
 app.get('/', (req, res) => res.send('Backend is running 🚀'));
