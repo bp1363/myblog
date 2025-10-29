@@ -10,10 +10,11 @@ const app = express();
 
 // CORS middleware: allow your frontend
 app.use(cors({
-  origin: 'https://blog-web-seven-kappa.vercel.app', // your frontend URL
+  origin: 'https://blog-web-seven-kappa.vercel.app',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 
 app.use(express.json());
 

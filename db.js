@@ -8,11 +8,11 @@ async function getConnection() {
   if (connection) return connection; // reuse existing connection
 
   connection = await mysql.createConnection({
-    host: process.env.MYSQLHOST,
-    user: process.env.MYSQLUSER,
-    password: process.env.MYSQLPASSWORD,
-    database: process.env.MYSQLDATABASE,
-    port: process.env.MYSQLPORT,
+    host: process.env.MYSQLHOST,       // containers-us-west-xxx.railway.app
+    user: process.env.MYSQLUSER,       // railway_user
+    password: process.env.MYSQLPASSWORD,// railway_password
+    database: process.env.MYSQLDATABASE,// railway_db
+    port: process.env.MYSQLPORT,        // 5432
   });
 
   console.log('✅ Connected to MySQL');
